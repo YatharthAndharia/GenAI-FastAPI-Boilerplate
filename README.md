@@ -1,0 +1,1 @@
+FastAPI Boilerplate For Generative AI Projects
