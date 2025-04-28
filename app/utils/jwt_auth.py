@@ -16,10 +16,10 @@ class AuthService:
         self.algorithm = algorithm or os.getenv("JWT_ALGORITHM")
         self.expiry_seconds = expiry_seconds
 
-    def sign_jwt(self, user_id: int) -> str:
+    def sign_jwt(self, email:str) -> str:
         try:
             payload = {
-                "user_id": user_id,
+                "email":email,
                 "expires": time.time() + self.expiry_seconds
             }
             token = jwt.encode(payload, self.secret, algorithm=self.algorithm)

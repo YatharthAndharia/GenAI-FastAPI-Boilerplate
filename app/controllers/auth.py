@@ -1,20 +1,29 @@
-from fastapi import APIRouter,Request,status,Response
+from fastapi import APIRouter,Request,status,Response,Depends
 from fastapi.responses import JSONResponse
-from app.middlewares.jwt_auth import AuthService
+from app.utils.jwt_auth import AuthService
 from app.schemas.auth_pydantic import AuthRequest,AuthResponse
+from app.session import SessionDep
+from sqlalchemy import text
+
 
 auth_service=AuthService()
 
+
 auth_router=APIRouter()
-@auth_router.post("/get-token",response_model=AuthResponse)
-async def sign_token(
-    request:Request,
+@auth_router.post("/sign-in",response_model=AuthResponse)
+async def sign_in(
     request_params:AuthRequest,
-    response:Response
+    response:Response,
+    session:SessionDep
 ):
     try:
-        user_id=request_params.user_id
-        jwt_token=auth_service.sign_jwt(user_id=user_id)
+        sql=text("SELECT * FROM public.user")
+        result=session.exec(sql)
+        users=result.all()
+        print(users)
+        email=request_params.email
+        password=request_params.password
+        jwt_token=auth_service.sign_jwt(email=email)
         return AuthResponse(
             status_code=status.HTTP_200_OK,
             message=jwt_token

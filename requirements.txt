@@ -1,4 +1,8 @@
+aiohttp
 fastapi
 uvicorn
 PyJWT
 pydantic
+sqlmodel
+sqlalchemy
+python-dotenv
